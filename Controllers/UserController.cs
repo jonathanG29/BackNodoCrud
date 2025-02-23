@@ -17,14 +17,10 @@ namespace AztroWebApplication1.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController(ApplicationDbContext context) : ControllerBase
 {
-    private readonly UserService userService;
+    private readonly UserService userService = new(context);
 
-    public UserController(ApplicationDbContext context)
-    {
-        userService = new UserService(context);
-    }
 
     [HttpGet]
     public async Task<IActionResult> GetUsers()
@@ -36,9 +32,9 @@ public class UserController : ControllerBase
     
     // New endpoint to get a user by ID
     [HttpGet("{id}")]
-    public IActionResult GetUserById(int id)
+    public async Task<IActionResult> GetUserById(int id)
     {
-        var user = userService.GetUserById(id);
+        var user = await userService.GetUserById(id);
 
         if (user == null)
         {
@@ -49,27 +45,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateUser()
+    public async Task<IActionResult> CreateUser(User user)
     {
-        var user = userService.CreateUser();
-
-        return Ok(user);
-    }
-
-    [HttpPut("{id}")]
-    public IActionResult UpdateUser(int id)
-    {
-        var user = userService.UpdateUser(id);
-
-        return Ok(user);
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult DeleteUser(int id)
-    {
-        var user = userService.DeleteUser(id);
-
-        return Ok(user);
+        var createUser = await userService.CreateUser(user);
+        return Created(nameof(CreateUser), createUser);
     }
 
 }

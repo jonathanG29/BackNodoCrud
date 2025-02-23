@@ -10,33 +10,33 @@ namespace AztroWebApplication1.Data{
 
     public class UserRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
         public UserRepository(ApplicationDbContext context)
         {
-            _context = context;
+            db = context;
         }
 
         public async Task<List<User>> GetAllUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await db.User.ToListAsync();
         }
 
         public async Task<User?> GetUserById(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await db.User.FirstOrDefaultAsync(user => user.Id == id);
         }
 
         public async Task<User> CreateUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
+            var newUser =  db.User.Add(user);
+            await db.SaveChangesAsync();
+            return newUser.Entity;
         }
         
         public async Task<User> UpdateUser(int id, User user)
         {
-            var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var userToUpdate = await db.User.FirstOrDefaultAsync(x => x.Id == id);
             if (userToUpdate == null)
             {
                 return null;
@@ -46,20 +46,20 @@ namespace AztroWebApplication1.Data{
             userToUpdate.Email = user.Email;
             userToUpdate.Age = user.Age;
 
-            await _context.SaveChangesAsync();
+            await db.SaveChangesAsync();
             return userToUpdate;
         }
 
         public async Task<User> DeleteUserById(int id)
         {
-            var userToDelete = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var userToDelete = await db.User.FirstOrDefaultAsync(x => x.Id == id);
             if (userToDelete == null)
             {
                 return null;
             }
 
-            _context.Users.Remove(userToDelete);
-            await _context.SaveChangesAsync();
+            db.User.Remove(userToDelete);
+            await db.SaveChangesAsync();
             return userToDelete;
         }
     }

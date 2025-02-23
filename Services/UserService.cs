@@ -5,15 +5,10 @@ using AztroWebApplication1.Models;
 
 namespace AztroWebApplication1.Services
 {
-    public class UserService
+    public class UserService(ApplicationDbContext context)
     {
 
-        private readonly UserRepository UserRepository;
-
-        public UserService(ApplicationDbContext context)
-        {
-            UserRepository = new UserRepository(context);
-        }
+        private readonly UserRepository UserRepository = new(context);
 
         public async Task<List<User>> GetAllUsers()
         {
@@ -22,35 +17,16 @@ namespace AztroWebApplication1.Services
 
         }
 
-        public User? GetUserById(int id)
+        public async Task<User?> GetUserById(int id)
         {
-
-            var user1 = new User {Id= 1, Name = "John Doe", Email = "", Age = 30};
-
-            // llamaria al repositorio para traer la información de la base de datos
-            // si la entiedad no existe en la base de datos, el repositorio deberia devolver null
-            if (id != 1)
-            {
-                return null;
-            }
             
-            return user1;
+            return await UserRepository.GetUserById(id);
         }
 
-        public User CreateUser()
+        public async Task<User> CreateUser(User user)
         {
-            return new User();
+            return await UserRepository.CreateUser(user);
         }
-
-        public User UpdateUser(int id)
-        {
-            return new User();
-        }
-
-        public User DeleteUser(int id)
-        {
-            return new User();
-        }
-            
+        
     }
 }    

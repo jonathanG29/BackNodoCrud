@@ -25,8 +25,19 @@ namespace AztroWebApplication1.Services
 
         public async Task<User> CreateUser(User user)
         {
+
+            if (user.Age < 18){
+                return null;
+            }
+
             return await UserRepository.CreateUser(user);
         }
         
+
+        public async Task<User?> DeleteUser(int id)
+        {
+            return await UserRepository.DeleteUser(id);
+            
+        }
     }
 }    

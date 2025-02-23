@@ -62,5 +62,19 @@ namespace AztroWebApplication1.Data{
             await db.SaveChangesAsync();
             return userToDelete;
         }
+
+
+        public async Task<User?> DeleteUser(int id)
+        {
+            var user = await this.GetUserById(id);
+            if (user == null) return null;
+            
+            
+
+            db.User.Remove(user);
+            await db.SaveChangesAsync();
+            return user;
+        }
     }
+    
 }

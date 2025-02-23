@@ -48,7 +48,26 @@ public class UserController(ApplicationDbContext context) : ControllerBase
     public async Task<IActionResult> CreateUser(User user)
     {
         var createUser = await userService.CreateUser(user);
+
+        if (createUser == null)
+        {
+            return BadRequest(new ErrorResponse {Message = "User is not old enough", StatusCode = 400});
+        }
+        
         return Created(nameof(CreateUser), createUser);
     }
 
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var userRemoved = await userService.DeleteUser(id);
+        if (userRemoved == null)
+        {
+            return NotFound(new ErrorResponse {Message = "User not found", StatusCode = 404});
+        }
+
+        //return Ok(userRemoved); devuelve el objeto eliminado en la respuesta
+        return Ok(new {Message = "User deleted successfully", User= userRemoved, StatusCode = 200}); // devuelve un mensaje en la respuesta
+    }
 }

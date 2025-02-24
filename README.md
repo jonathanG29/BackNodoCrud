@@ -5,10 +5,34 @@ Este proyecto proporciona una API RESTful para la gestión de usuarios. Los endp
 ## Endpoints
 
 - `GET /api/users` ➔ Recupera una lista de usuarios
+
+![alt text](img/image.png)
+
 - `GET /api/users/{id}` ➔ Recupera un usuario específico por ID
+
+![alt text](img/image-2.png)
+
 - `POST /api/users` ➔ Crea un nuevo usuario
+
+![alt text](img/image-5.png)
+
 - `PUT /api/users/{id}` ➔ Actualiza un usuario existente por ID
+
+![alt text](img/image-4.png)
+
 - `DELETE /api/users/{id}` ➔ Elimina un usuario por ID
+
+![alt text](img/image-3.png)
+
+## Validación mayor de edad
+
+### usario no creado menor de edad
+
+![alt text](img/image-6.png)
+
+### Actualizar usuario a menor de edad
+
+![alt text](img/image-7.png)
 
 ## Clonar y ejecutar
 

@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Reflection;
 
 
 namespace AztroWebApplication1.Data{
@@ -27,6 +29,8 @@ namespace AztroWebApplication1.Data{
             return await db.User.FirstOrDefaultAsync(user => user.Id == id);
         }
 
+
+        // Función para crear un usuario
         public async Task<User> CreateUser(User user)
         {
             var newUser =  db.User.Add(user);
@@ -34,36 +38,8 @@ namespace AztroWebApplication1.Data{
             return newUser.Entity;
         }
         
-        public async Task<User> UpdateUser(int id, User user)
-        {
-            var userToUpdate = await db.User.FirstOrDefaultAsync(x => x.Id == id);
-            if (userToUpdate == null)
-            {
-                return null;
-            }
 
-            userToUpdate.Name = user.Name;
-            userToUpdate.Email = user.Email;
-            userToUpdate.Age = user.Age;
-
-            await db.SaveChangesAsync();
-            return userToUpdate;
-        }
-
-        public async Task<User> DeleteUserById(int id)
-        {
-            var userToDelete = await db.User.FirstOrDefaultAsync(x => x.Id == id);
-            if (userToDelete == null)
-            {
-                return null;
-            }
-
-            db.User.Remove(userToDelete);
-            await db.SaveChangesAsync();
-            return userToDelete;
-        }
-
-
+        // Función para eliminar un usuario por ID
         public async Task<User?> DeleteUser(int id)
         {
             var user = await this.GetUserById(id);
@@ -74,6 +50,39 @@ namespace AztroWebApplication1.Data{
             db.User.Remove(user);
             await db.SaveChangesAsync();
             return user;
+        }
+        
+
+        // Función para actualizar un usuario por ID
+        public async Task<User?> UpdateUser(int id, User user)
+        {
+            var userToUpdate = await this.GetUserById(id);
+            if (userToUpdate == null) return null;
+
+            user.Id = userToUpdate.Id;
+            var userUpdated = UpdateObject(userToUpdate, user);
+
+            db.User.Update(userUpdated);
+            await db.SaveChangesAsync();
+            return userToUpdate;
+        }
+        // Función para actualizar un objeto y usarlo en el método UpdateUserById
+        private static T UpdateObject<T>(T current, T newObject)
+        {
+            foreach (PropertyInfo prop in typeof(T).GetProperties())
+            {
+                var newValue = prop.GetValue(newObject);
+
+                // Si es un string y está vacío, se ignora
+                if (newValue == null || string.IsNullOrEmpty(newValue.ToString()))
+                    continue;
+
+                // Si es un int y su valor es 0 en newObject, se ignora
+                if (newValue is int intValue && intValue == 0)
+                    continue;
+                prop.SetValue(current, newValue);
+            }
+            return current;
         }
     }
     

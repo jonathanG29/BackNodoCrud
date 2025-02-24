@@ -25,8 +25,8 @@ namespace AztroWebApplication1.Services
 
         public async Task<User> CreateUser(User user)
         {
-
-            if (user.Age < 18){
+            //validar si el usuario es mayr de edad
+            if (user.Age < 17){
                 return null;
             }
 
@@ -39,5 +39,18 @@ namespace AztroWebApplication1.Services
             return await UserRepository.DeleteUser(id);
             
         }
+
+        public async Task<User> UpdateUser(int id, User user)
+        {
+
+            // Validar si el usuario es mayor de edad
+            if (user.Age < 18)
+            {
+                return null;
+            }
+
+            return await UserRepository.UpdateUser(id, user);
+        }
+
     }
 }    

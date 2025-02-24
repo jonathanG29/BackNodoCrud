@@ -51,13 +51,13 @@ public class UserController(ApplicationDbContext context) : ControllerBase
 
         if (createUser == null)
         {
-            return BadRequest(new ErrorResponse {Message = "User is not old enough", StatusCode = 400});
+            return BadRequest(new ErrorResponse {Message = "User is very jong", StatusCode = 400});
         }
         
         return Created(nameof(CreateUser), createUser);
     }
 
-
+    //metodo para eliminar un usuario
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
@@ -70,4 +70,19 @@ public class UserController(ApplicationDbContext context) : ControllerBase
         //return Ok(userRemoved); devuelve el objeto eliminado en la respuesta
         return Ok(new {Message = "User deleted successfully", User= userRemoved, StatusCode = 200}); // devuelve un mensaje en la respuesta
     }
+
+    //metodo para actualizar un usuario
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, User user)
+    {
+        var userUpdated = await userService.UpdateUser(id, user);
+
+        if (userUpdated == null)
+        {
+            return NotFound(new ErrorResponse {Message = "User must be at least 18 years old", StatusCode = 404});
+        }
+
+        return Ok(userUpdated);
+    }
+
 }
